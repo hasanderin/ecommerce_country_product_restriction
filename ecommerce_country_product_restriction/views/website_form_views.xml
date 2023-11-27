@@ -1,0 +1,22 @@
+<odoo>
+    <data>
+        <record id="view_website_form_inherits" model="ir.ui.view">
+            <field name="name">view.website.form.inherits</field>
+            <field name="model">website</field>
+            <field name="inherit_id" ref="website_sale.view_website_sale_website_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page name="country_ids" string="Product Country Configuration">
+                        <group name="Select Countries" string="Select Countries">
+                            <field name="country_ids" widget="many2many_tags" placeholder="Select countries. Leave empty to show all countries." />
+                        </group>
+                        <group name="message" string="Messages displayed on cart and checkout">
+                            <field name="cart_message" />
+                            <field name="checkout_message" />
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

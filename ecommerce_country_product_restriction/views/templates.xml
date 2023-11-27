@@ -1,0 +1,62 @@
+<odoo>
+    <data>
+        <template id="checkout" inherit_id="website_sale.checkout">
+            <xpath expr="//t[@t-set='same_shipping']" position="after">
+                <t t-if="one_shipping and website_sale_order.partner_shipping_id.country_id">
+                    <div class="alert alert-danger" t-if="product_not_available" role="alert">
+                        <t t-if="website.checkout_message">
+                            <p style="color:red;"><span>
+                                    <t t-esc="website.checkout_message" /></span></p>
+                        </t>
+                    </div>
+                </t>
+            </xpath>
+        </template>
+        <template id="payment" inherit_id="website_sale.payment">
+            <xpath expr="//div[@id='wrap']//div[hasclass('row')]" position="before">
+                <t t-if="website_sale_order.partner_shipping_id.country_id ">
+                    <div class="alert alert-danger" t-if="product_not_available" role="alert" id="div_pay">
+                        <t t-if="website.checkout_message">
+                            <p style="color:red;"><span>
+                                    <t t-esc="website.checkout_message" /></span></p>
+                        </t>
+                    </div>
+                </t>
+            </xpath>
+        </template>
+        <template id="cart_lines" inherit_id="website_sale.cart_lines">
+            <xpath expr="//t[@t-foreach='website_sale_order.website_order_line']//td[hasclass('td-product_name')]" position="inside">
+                <t t-if="line.product_id.country_ids">
+                    <t t-if="website_sale_order.partner_shipping_id.country_id and website_sale_order.partner_shipping_id.country_id.id not in line.product_id.country_ids.ids">
+                        <t t-if="website.cart_message">
+                            <p style="color:red;"><span>
+                                    <t t-esc="website.cart_message" /></span></p>
+                        </t>
+                    </t>
+                </t>
+            </xpath>
+        </template>
+        <template id="address_kanban" inherit_id="website_sale.address_kanban">
+            <xpath expr="//div[hasclass('card-body')]" position="before">
+                <t t-set="in_country_product_unavailable" t-value="False" />
+            </xpath>
+            <xpath expr="//div[hasclass('card-body')]" position="inside">
+                <p t-foreach="website_sale_order.order_line" t-as="line">
+                    <t t-if="contact.country_id.id not in line.product_id.country_ids.ids">
+                        <t t-set="in_country_product_unavailable" t-value="True" />
+                    </t>
+                </p>
+                <t t-if="in_country_product_unavailable">
+                    <input type="checkbox" id='is_in_country_checked' name="is_in_country_checked" t-att-checked="'checked'" style="display:none;" />
+                </t>
+            </xpath>
+            <xpath expr="//div[hasclass('card-footer')]/span[1]/a" position="before">
+                <t t-if="in_country_product_unavailable">
+                    <t t-if="website.cart_message">
+                        <p style="color:red;"><span>Some products are not available on this address</span></p>
+                    </t>
+                </t>
+            </xpath>
+        </template>
+    </data>
+</odoo>
